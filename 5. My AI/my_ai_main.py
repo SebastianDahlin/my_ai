@@ -2,9 +2,6 @@ import datetime
 import time
 import nltk
 import person_module
-from geotext import GeoText
-
-'''Trying to update git from the HP'''
 
 # Classes
 class Question:
@@ -39,15 +36,6 @@ def fill_quest(quest, user_input):
     '''This function looks in the tags of the analysed sentence and fills the quest object'''
     # Create a word list from user input
     word_list = nltk.word_tokenize(user_input)
-    # Check each word if they are a city or country (Since GeoText is broken!)
-    for word in word_list:
-        place = GeoText(word)
-        if place.cities:
-            quest.city = place.cities
-        if place.countries:
-            quest.country = place.countries
-    # Remove country and city names and put them in the quest object
-    word_list = [word for word in word_list if word not in quest.city + quest.country]
     # Tagg the remaining list with nltk postagger
     tagged = nltk.pos_tag(word_list)
 

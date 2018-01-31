@@ -15,6 +15,7 @@ class Question:
         self.verb = []
         self.person = ""
         self.country = ""
+        self.city = ""
         self.time = ""
         self.company = ""
         self.bool = False

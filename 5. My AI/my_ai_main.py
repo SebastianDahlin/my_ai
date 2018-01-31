@@ -2,7 +2,7 @@ import datetime
 import time
 import nltk
 import person_module
-import geotext
+from geotext import GeoText
 
 ''' Making another change just to try'''
 
@@ -14,18 +14,18 @@ class Question:
         self.adjective = []
         self.verb = []
         self.person = ""
-        self.country = ""
-        self.city = ""
+        self.country = []
+        self.city = []
         self.time = ""
         self.company = ""
         self.bool = False
 
 #Functions
-def process_content(question):
-    '''This function takes a string and returns a list of tuples {word, nltk definition}'''
-    word_list = nltk.word_tokenize(question)
-    tagged = nltk.pos_tag(word_list)
-    return tagged
+# def process_content(question):
+#     '''This function takes a string and returns a list of tuples {word, nltk definition}'''
+#     word_list = nltk.word_tokenize(question)
+#     tagged = nltk.pos_tag(word_list)
+#     return tagged
 
 def for_print(sents):
     '''This function takes string(s) and prints proper capitalized sentences'''
@@ -35,8 +35,22 @@ def for_print(sents):
         concat_sents += sent[0].capitalize() + sent[1:] + " "
     print(concat_sents)
  
-def fill_quest(quest, tagged):
-    '''This function looks in the tags of the analysed sentence and fills the quest object''' 
+def fill_quest(quest, user_input):
+    '''This function looks in the tags of the analysed sentence and fills the quest object'''
+    # Create a word list from user input
+    word_list = nltk.word_tokenize(user_input)
+    # Check each word if they are a city or country (Since GeoText is broken!)
+    for word in word_list:
+        place = GeoText(word)
+        if place.cities:
+            quest.city = place.cities
+        if place.countries:
+            quest.country = place.countries
+    # Remove country and city names and put them in the quest object
+    word_list = [word for word in word_list if word not in quest.city + quest.country]
+    # Tagg the remaining list with nltk postagger
+    tagged = nltk.pos_tag(word_list)
+
 
     try:
         for tag in tagged:
@@ -123,9 +137,8 @@ def boolean_person(quest, person):
 def main():
     '''This is the main program'''
     user_input = input("Ask a question: ")
-    tagged = process_content(user_input)
     quest = Question()
-    fill_quest(quest, tagged)
+    fill_quest(quest, user_input)
     analyse_and_answer(quest)
 if __name__ == "__main__":
     main()

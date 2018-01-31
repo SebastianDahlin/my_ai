@@ -4,6 +4,8 @@ import nltk
 import person_module
 import geotext
 
+'''This is just a comment to see a change for the first git upload'''
+
 # Classes
 class Question:
     '''This class holds information about the given question'''
